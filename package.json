@@ -1,6 +1,6 @@
 {
   "name": "random-elements",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Utility for picking one or more elements from any array",
   "main": "dist/index.js",
   "scripts": {
