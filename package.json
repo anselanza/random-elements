@@ -1,8 +1,9 @@
 {
   "name": "random-elements",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Utility for picking one or more elements from any array",
   "main": "dist/index.js",
+  "repository": "https://github.com/anselanza/random-elements",
   "scripts": {
     "prepare": "npm run clean && npm run build",
     "clean": "shx rm -rf dist",
