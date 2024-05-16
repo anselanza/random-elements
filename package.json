@@ -1,0 +1,16 @@
+{
+  "name": "random-elements",
+  "version": "0.1.0",
+  "description": "Utility for picking one or more elements from any array",
+  "main": "dist/index.js",
+  "scripts": {
+    "start": "npm run build && node dist/index.js",
+    "build": "npx tsc",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Stephen Buchanan",
+  "license": "ISC",
+  "devDependencies": {
+    "typescript": "^5.4.5"
+  }
+}
