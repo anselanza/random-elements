@@ -4,7 +4,8 @@
   "description": "Utility for picking one or more elements from any array",
   "main": "dist/index.js",
   "scripts": {
-    "start": "npm run build && node dist/index.js",
+    "prepare": "npm run clean && npm run build",
+    "clean": "shx rm -rf dist",
     "build": "npm run test && npx tsc",
     "test": "npx jest"
   },
@@ -13,6 +14,7 @@
   "devDependencies": {
     "@types/jest": "^29.5.12",
     "jest": "^29.7.0",
+    "shx": "^0.3.4",
     "ts-jest": "^29.1.2",
     "typescript": "^5.4.5"
   }
