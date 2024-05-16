@@ -1,7 +1,10 @@
 # Random Element picker
 
-For now, just provides a nicely-typed, well-tested utility for picking a random element from an array.
+Provides a nicely-typed, well-tested utility for picking one or multiple random element(s) from an array.
 
-## Coming soon:
+Pretty simple.
 
-- Pick any number of elements from an array, guarranteed to be unique
+The main benefits of this over doing it yourself:
+
+- Proper TypeScript generics ensure that the type of element array you submit is returned with the same types. Makes the compiler happy when you use this library in your own code.
+- Well tested, so prevents silly range errors and unexpected results.

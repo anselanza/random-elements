@@ -1,4 +1,4 @@
-import { pickRandomElement, pickRandomIndex } from ".";
+import { pickMultiple, pickRandomElement, pickRandomIndex } from ".";
 
 const REPETITIONS = 1000;
 
@@ -84,5 +84,41 @@ describe("basic pick single element", () => {
     expect(maxAttempts).toBeGreaterThanOrEqual(0);
     expect(foundFirst).toBeTruthy();
     expect(foundLast).toBeTruthy();
+  });
+});
+
+describe("Pick any number of unique elements", () => {
+  const inputArray = ["one", "two", "three", "four", "five", "six", "seven"];
+  test("pick 2", () => {
+    const elements = pickMultiple(inputArray, 2);
+    expect(elements.length).toBe(2);
+  });
+  test("each element should exist in the original array", () => {
+    const elements = pickMultiple(inputArray, inputArray.length);
+    for (const e of elements) {
+      expect(inputArray).toContain(e);
+    }
+  });
+  test("invalid count values should throw Error", () => {
+    expect(() => {
+      pickMultiple(inputArray, 0);
+    }).toThrow("out of range");
+    expect(() => {
+      pickMultiple(inputArray, 10);
+    }).toThrow("out of range");
+  });
+  test("the same element should never appear more than once", () => {
+    for (let i = 0; i < REPETITIONS; i++) {
+      const count = Math.floor(1 + Math.random() * inputArray.length);
+      // console.log({ count });
+      const elements = pickMultiple(inputArray, count);
+      const onlyOnes = elements.filter((e) => e == "one");
+      expect(Array.isArray(onlyOnes)).toBeTruthy();
+      if (onlyOnes.length > 0) {
+        expect(onlyOnes.length).toBe(1);
+      } else {
+        expect(onlyOnes.length).toBe(0);
+      }
+    }
   });
 });
