@@ -1,4 +1,9 @@
-import { pickMultiple, pickRandomElement, pickRandomIndex } from ".";
+import {
+  pickMultipleRandomElements,
+  pickRandomElement,
+  pickRandomIndex,
+  pickRandomIndexes,
+} from ".";
 
 const REPETITIONS = 1000;
 
@@ -90,28 +95,28 @@ describe("basic pick single element", () => {
 describe("Pick any number of unique elements", () => {
   const inputArray = ["one", "two", "three", "four", "five", "six", "seven"];
   test("pick 2", () => {
-    const elements = pickMultiple(inputArray, 2);
+    const elements = pickMultipleRandomElements(inputArray, 2);
     expect(elements.length).toBe(2);
   });
   test("each element should exist in the original array", () => {
-    const elements = pickMultiple(inputArray, inputArray.length);
+    const elements = pickMultipleRandomElements(inputArray, inputArray.length);
     for (const e of elements) {
       expect(inputArray).toContain(e);
     }
   });
   test("invalid count values should throw Error", () => {
     expect(() => {
-      pickMultiple(inputArray, 0);
+      pickMultipleRandomElements(inputArray, 0);
     }).toThrow("out of range");
     expect(() => {
-      pickMultiple(inputArray, 10);
+      pickMultipleRandomElements(inputArray, 10);
     }).toThrow("out of range");
   });
   test("the same element should never appear more than once", () => {
     for (let i = 0; i < REPETITIONS; i++) {
       const count = Math.floor(1 + Math.random() * inputArray.length);
       // console.log({ count });
-      const elements = pickMultiple(inputArray, count);
+      const elements = pickMultipleRandomElements(inputArray, count);
       const onlyOnes = elements.filter((e) => e == "one");
       expect(Array.isArray(onlyOnes)).toBeTruthy();
       if (onlyOnes.length > 0) {
@@ -120,5 +125,53 @@ describe("Pick any number of unique elements", () => {
         expect(onlyOnes.length).toBe(0);
       }
     }
+  });
+});
+
+describe("Convenient index-picking utilities", () => {
+  test("all indexes from result should be unique", () => {
+    const indexesPicked = pickRandomIndexes(3, 3);
+    expect(indexesPicked).toHaveLength(3);
+    expect(indexesPicked.filter((x) => x === 0)).toHaveLength(1);
+    expect(indexesPicked.filter((x) => x === 1)).toHaveLength(1);
+    expect(indexesPicked.filter((x) => x === 2)).toHaveLength(1);
+  });
+
+  test("all indexes from result should be in range", () => {
+    for (let i = 0; i < REPETITIONS; i++) {
+      const indexesPicked = pickRandomIndexes(10, 5); // 50%
+      expect(indexesPicked.every((x) => x >= 0 && x < 10)).toBeTruthy();
+    }
+  });
+  test("all possible combinations/orders should appear", () => {
+    let combinations = [];
+    for (let i = 0; i < REPETITIONS; i++) {
+      const indexesPicked = pickRandomIndexes(3, 3);
+      combinations.push(indexesPicked);
+    }
+    expect(combinations).toHaveLength(REPETITIONS);
+
+    const possible = ["012", "021", "201", "210", "120", "102"];
+    let found = new Set();
+
+    for (const c of combinations) {
+      const pattern = c.join("");
+      expect(possible.find((x) => x === pattern)).toBeDefined(); // no impossible combinations
+      found.add(pattern);
+    }
+
+    expect(found.size).toBe(6);
+  });
+
+  test("specifying count larger than size throws error", () => {
+    expect(() => {
+      pickRandomIndexes(3, 4);
+    }).toThrow("out of range");
+  });
+
+  test("specifying size zero throws error", () => {
+    expect(() => {
+      pickRandomIndexes(0, 0);
+    }).toThrow();
   });
 });

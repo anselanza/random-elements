@@ -1,6 +1,15 @@
 export const pickRandomIndex = (arr: any[]): number =>
   Math.floor(Math.random() * arr.length);
 
+/** Pick `count` indexes out of a sequence of indexes which counts from 0..`size` */
+export const pickRandomIndexes = (size: number, count: number) => {
+  let arr = [];
+  for (let i = 0; i < size; i++) {
+    arr.push(i);
+  }
+  return pickMultipleRandomElements(arr, count);
+};
+
 /** Pseudo-random pick an alement of an array, retaining the element types. */
 export const pickRandomElement = <T>(arr: T[]): T => {
   return arr[pickRandomIndex(arr)];
@@ -9,8 +18,11 @@ export const pickRandomElement = <T>(arr: T[]): T => {
 /** Pick exactly `count` elements from an array.
  * The same element will never appear more than once in the result, but
  * since we do not check for equality, if the original array contains
- * duplicates then these values may well occur multiple times in the result. */
-export const pickMultiple = <T>(arr: T[], count: number): T[] => {
+ * duplicates then these values may well occur multiple times in the result.
+ *
+ * The given array will NOT be modified.
+ * */
+export const pickMultipleRandomElements = <T>(arr: T[], count: number): T[] => {
   if (count < 1 || count > arr.length) {
     throw Error(
       `count is out of range: you provided ${count} which is not in the range [1;${arr.length}]`
