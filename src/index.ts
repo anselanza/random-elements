@@ -49,37 +49,37 @@ const shuffleDurstenfeld = <T>(array: Readonly<T[]>): T[] => {
   return result;
 };
 
-// export type Weights<T> = Map<T, number>
+export type WeightedKeys<K> = Map<K, number>;
 
-export type WeightedKey<T> = [T, number];
+type Range = [number, number];
 
-type WeightKeyRanges<T> = [T, [number, number]];
+type WeightedKeyRanges<K> = Map<K, Range>;
 
-export const getRangesFor = <T>(
-  weightedKeys: WeightedKey<T>[]
-): WeightKeyRanges<T>[] => {
-  const total = weightedKeys.reduce((result, entry) => {
+export const getRangesFor = <K>(
+  weightedKeys: WeightedKeys<K>
+): WeightedKeyRanges<K> => {
+  const total = Array.from(weightedKeys).reduce((result, entry) => {
     const [_key, weight] = entry;
     return result + weight;
   }, 0);
 
-  return weightedKeys.reduce((result, wk, i) => {
+  const rangeMap: WeightedKeyRanges<K> = new Map();
+
+  let previousEnd = 0;
+  for (const wk of weightedKeys) {
     const [key, weight] = wk;
-    const previousWeight = result[i - 1];
-    if (previousWeight) {
-      const [_previousKey, previousRange] = previousWeight;
-      const [_start, end] = previousRange;
-      return [...result, [key, [end, end + weight / total]]];
-    } else {
-      return [[key, [0, weight / total]]];
-    }
-  }, [] as WeightKeyRanges<T>[]);
+    const [start, end] = [previousEnd, previousEnd + weight / total];
+    rangeMap.set(key, [start, end]);
+    previousEnd += end;
+  }
+
+  return rangeMap;
 };
 
-export const pickKeysWithWeights = <T>(weightedKeys: WeightedKey<T>[]): T => {
+export const pickKeysWithWeights = <T>(weightedKeys: WeightedKeys<T>): T => {
   const ranges = getRangesFor(weightedKeys);
   const randomNumber = Math.random();
-  const withinRange = ranges.find((keyWithRange) => {
+  const withinRange = Array.from(ranges).find((keyWithRange) => {
     const [key, range] = keyWithRange;
     const [start, end] = range;
     return randomNumber >= start && randomNumber < end;

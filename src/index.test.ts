@@ -5,7 +5,6 @@ import {
   pickRandomElement,
   pickRandomIndex,
   pickRandomIndexes,
-  WeightedKey,
 } from ".";
 
 const REPETITIONS = 1000;
@@ -194,22 +193,22 @@ describe("Picking with weighted distributions", () => {
   });
 
   test("convert relative weights into ranges", () => {
-    const WEIGHTED_HEADS: WeightedKey<string>[] = [
+    const WEIGHTED_HEADS = new Map([
       ["heads", 3],
       ["tails", 1],
-    ];
+    ]);
 
     const ranges = getRangesFor(WEIGHTED_HEADS);
 
-    expect(ranges[0]).toEqual(["heads", [0, 0.75]]);
-    expect(ranges[1]).toEqual(["tails", [0.75, 1]]);
+    expect(ranges.get("heads")).toEqual([0, 0.75]);
+    expect(ranges.get("tails")).toEqual([0.75, 1]);
   });
 
   test("in 50/50 situation, item weighted twice as likely should appear roughly twice as often", () => {
-    const WEIGHTED_HEADS: WeightedKey<string>[] = [
+    const WEIGHTED_HEADS = new Map([
       ["heads", 2],
       ["tails", 1],
-    ];
+    ]);
 
     let counts = {
       heads: 0,
@@ -235,10 +234,10 @@ describe("Picking with weighted distributions", () => {
   });
 
   test("in 50/50 situation, item weighted ten as likely should appear roughly ten times as often", () => {
-    const WEIGHTED_HEADS: WeightedKey<string>[] = [
+    const WEIGHTED_HEADS = new Map([
       ["heads", 10],
       ["tails", 1],
-    ];
+    ]);
 
     let counts = {
       heads: 0,
