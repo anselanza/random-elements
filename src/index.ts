@@ -48,3 +48,43 @@ const shuffleDurstenfeld = <T>(array: Readonly<T[]>): T[] => {
   }
   return result;
 };
+
+// export type Weights<T> = Map<T, number>
+
+export type WeightedKey<T> = [T, number];
+
+type WeightKeyRanges<T> = [T, [number, number]];
+
+export const getRangesFor = <T>(
+  weightedKeys: WeightedKey<T>[]
+): WeightKeyRanges<T>[] => {
+  const total = weightedKeys.reduce((result, entry) => {
+    const [_key, weight] = entry;
+    return result + weight;
+  }, 0);
+
+  return weightedKeys.reduce((result, wk, i) => {
+    const [key, weight] = wk;
+    const previousWeight = result[i - 1];
+    if (previousWeight) {
+      const [_previousKey, previousRange] = previousWeight;
+      const [_start, end] = previousRange;
+      return [...result, [key, [end, end + weight / total]]];
+    } else {
+      return [[key, [0, weight / total]]];
+    }
+  }, [] as WeightKeyRanges<T>[]);
+};
+
+// export const pickKeysWithWeights = (weightedKeys: WeightedKeys): string => {
+//   const total = Object.keys(weightedKeys).reduce((result, k) => {
+//     const weight = weightedKeys[k];
+//     return result + weight;
+//   }, 0);
+
+//   const stops = Object.keys(weightedKeys).map<number>(k => {
+//     const weight = weightedKeys[k];
+//     return weight / total
+//   });
+
+// }

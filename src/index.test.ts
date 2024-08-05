@@ -1,8 +1,10 @@
 import {
+  getRangesFor,
   pickMultipleRandomElements,
   pickRandomElement,
   pickRandomIndex,
   pickRandomIndexes,
+  WeightedKey,
 } from ".";
 
 const REPETITIONS = 1000;
@@ -173,5 +175,61 @@ describe("Convenient index-picking utilities", () => {
     expect(() => {
       pickRandomIndexes(0, 0);
     }).toThrow();
+  });
+});
+
+describe("Picking with weighted distributions", () => {
+  const items = ["one", "two", "three", "four"];
+  const SAMPLE_RUNS = 10000;
+  test("normally, the same element will occur roughly in 1/n", () => {
+    let count = 0;
+    for (let i = 0; i < SAMPLE_RUNS; i++) {
+      const p = pickRandomElement(items);
+      if (p == "one") {
+        count++;
+      }
+    }
+    expect(Math.abs(count / SAMPLE_RUNS - 0.25)).toBeLessThanOrEqual(0.25 / 2);
+  });
+
+  test("convert relative weights into ranges", () => {
+    const WEIGHTED_HEADS: WeightedKey<string>[] = [
+      ["heads", 3],
+      ["tails", 1],
+    ];
+
+    const ranges = getRangesFor(WEIGHTED_HEADS);
+
+    expect(ranges[0]).toEqual(["heads", [0, 0.75]]);
+    expect(ranges[1]).toEqual(["tails", [0.75, 1]]);
+  });
+
+  test("in 50/50 situation, item weighted twice as likely should appear roughly twice as often", () => {
+    const WEIGHTS = {
+      heads: 2,
+      tails: 1,
+    };
+
+    let counts = {
+      heads: 0,
+      tails: 0,
+    };
+    for (let i = 0; i < SAMPLE_RUNS; i++) {
+      const p = pickRandomElement(Object.keys(WEIGHTS));
+      if (p == "heads") {
+        counts.heads++;
+      } else counts.tails++;
+    }
+
+    const percentages = {
+      heads: counts.heads / SAMPLE_RUNS,
+      tails: counts.tails / SAMPLE_RUNS,
+    };
+
+    console.log({ counts, percentages });
+
+    // With ratio 2:1, we expect roughly 1/3 heads vs 2/3 tails
+    expect(Math.abs(percentages.heads - 0.666)).toBeLessThan(0.1);
+    expect(Math.abs(percentages.tails - 0.333)).toBeLessThan(0.1);
   });
 });
