@@ -181,6 +181,7 @@ describe("Convenient index-picking utilities", () => {
 describe("Picking with weighted distributions", () => {
   const items = ["one", "two", "three", "four"];
   const SAMPLE_RUNS = 10000;
+
   test("normally, the same element will occur roughly in 1/n", () => {
     let count = 0;
     for (let i = 0; i < SAMPLE_RUNS; i++) {
@@ -202,6 +203,20 @@ describe("Picking with weighted distributions", () => {
 
     expect(ranges.get("heads")).toEqual([0, 0.75]);
     expect(ranges.get("tails")).toEqual([0.75, 1]);
+  });
+
+  test("more range conversion tests", () => {
+    const WEIGHTED_HEADS = new Map([
+      ["one", 1],
+      ["two", 3],
+      ["three", 1],
+    ]);
+
+    const ranges = getRangesFor(WEIGHTED_HEADS);
+
+    expect(ranges.get("one")).toEqual([0, 0.2]); // 1/5 => 20%
+    expect(ranges.get("two")).toEqual([0.2, 0.8]); // 3/5 => 60%
+    expect(ranges.get("three")).toEqual([0.8, 1]); // 1/5 => 20%
   });
 
   test("in 50/50 situation, item weighted twice as likely should appear roughly twice as often", () => {

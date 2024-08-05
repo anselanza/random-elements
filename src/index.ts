@@ -70,7 +70,7 @@ export const getRangesFor = <K>(
     const [key, weight] = wk;
     const [start, end] = [previousEnd, previousEnd + weight / total];
     rangeMap.set(key, [start, end]);
-    previousEnd += end;
+    previousEnd = end;
   }
 
   return rangeMap;
@@ -80,7 +80,7 @@ export const pickKeysWithWeights = <T>(weightedKeys: WeightedKeys<T>): T => {
   const ranges = getRangesFor(weightedKeys);
   const randomNumber = Math.random();
   const withinRange = Array.from(ranges).find((keyWithRange) => {
-    const [key, range] = keyWithRange;
+    const [_key, range] = keyWithRange;
     const [start, end] = range;
     return randomNumber >= start && randomNumber < end;
   });
