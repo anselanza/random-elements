@@ -76,15 +76,20 @@ export const getRangesFor = <T>(
   }, [] as WeightKeyRanges<T>[]);
 };
 
-// export const pickKeysWithWeights = (weightedKeys: WeightedKeys): string => {
-//   const total = Object.keys(weightedKeys).reduce((result, k) => {
-//     const weight = weightedKeys[k];
-//     return result + weight;
-//   }, 0);
-
-//   const stops = Object.keys(weightedKeys).map<number>(k => {
-//     const weight = weightedKeys[k];
-//     return weight / total
-//   });
-
-// }
+export const pickKeysWithWeights = <T>(weightedKeys: WeightedKey<T>[]): T => {
+  const ranges = getRangesFor(weightedKeys);
+  const randomNumber = Math.random();
+  const withinRange = ranges.find((keyWithRange) => {
+    const [key, range] = keyWithRange;
+    const [start, end] = range;
+    return randomNumber >= start && randomNumber < end;
+  });
+  if (withinRange) {
+    const [key] = withinRange;
+    return key;
+  } else {
+    throw Error(
+      `nothing in range ${JSON.stringify(ranges)} with value ${randomNumber}`
+    );
+  }
+};

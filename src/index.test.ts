@@ -1,5 +1,6 @@
 import {
   getRangesFor,
+  pickKeysWithWeights,
   pickMultipleRandomElements,
   pickRandomElement,
   pickRandomIndex,
@@ -205,17 +206,17 @@ describe("Picking with weighted distributions", () => {
   });
 
   test("in 50/50 situation, item weighted twice as likely should appear roughly twice as often", () => {
-    const WEIGHTS = {
-      heads: 2,
-      tails: 1,
-    };
+    const WEIGHTED_HEADS: WeightedKey<string>[] = [
+      ["heads", 2],
+      ["tails", 1],
+    ];
 
     let counts = {
       heads: 0,
       tails: 0,
     };
     for (let i = 0; i < SAMPLE_RUNS; i++) {
-      const p = pickRandomElement(Object.keys(WEIGHTS));
+      const p = pickKeysWithWeights(WEIGHTED_HEADS);
       if (p == "heads") {
         counts.heads++;
       } else counts.tails++;
@@ -231,5 +232,28 @@ describe("Picking with weighted distributions", () => {
     // With ratio 2:1, we expect roughly 1/3 heads vs 2/3 tails
     expect(Math.abs(percentages.heads - 0.666)).toBeLessThan(0.1);
     expect(Math.abs(percentages.tails - 0.333)).toBeLessThan(0.1);
+  });
+
+  test("in 50/50 situation, item weighted ten as likely should appear roughly ten times as often", () => {
+    const WEIGHTED_HEADS: WeightedKey<string>[] = [
+      ["heads", 10],
+      ["tails", 1],
+    ];
+
+    let counts = {
+      heads: 0,
+      tails: 0,
+    };
+    for (let i = 0; i < SAMPLE_RUNS * 2; i++) {
+      const p = pickKeysWithWeights(WEIGHTED_HEADS);
+      if (p == "heads") {
+        counts.heads++;
+      } else counts.tails++;
+    }
+
+    const ratio = counts.heads / counts.tails;
+
+    expect(ratio).toBeGreaterThan(1);
+    expect(ratio).toBeCloseTo(10, 0);
   });
 });
