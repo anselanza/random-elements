@@ -1,8 +1,8 @@
-export const pickRandomIndex = (arr: any[]): number =>
+export const pickRandomIndex = (arr: Readonly<any[]>): number =>
   Math.floor(Math.random() * arr.length);
 
 /** Pick `count` indexes out of a sequence of indexes which counts from 0..`size` */
-export const pickRandomIndexes = (size: number, count: number) => {
+export const pickRandomIndexes = (size: number, count: number): number[] => {
   let arr = [];
   for (let i = 0; i < size; i++) {
     arr.push(i);
@@ -11,7 +11,7 @@ export const pickRandomIndexes = (size: number, count: number) => {
 };
 
 /** Pseudo-random pick an alement of an array, retaining the element types. */
-export const pickRandomElement = <T>(arr: T[]): T => {
+export const pickRandomElement = <T>(arr: Readonly<T[]>): T => {
   return arr[pickRandomIndex(arr)];
 };
 
@@ -22,7 +22,10 @@ export const pickRandomElement = <T>(arr: T[]): T => {
  *
  * The given array will NOT be modified.
  * */
-export const pickMultipleRandomElements = <T>(arr: T[], count: number): T[] => {
+export const pickMultipleRandomElements = <T>(
+  arr: Readonly<T[]>,
+  count: number
+): T[] => {
   if (count < 1 || count > arr.length) {
     throw Error(
       `count is out of range: you provided ${count} which is not in the range [1;${arr.length}]`
@@ -37,7 +40,7 @@ export const pickMultipleRandomElements = <T>(arr: T[], count: number): T[] => {
 };
 
 /** Shuffles the given array without modifying the original array, i.e. returns a copy. */
-const shuffleDurstenfeld = <T>(array: T[]): T[] => {
+const shuffleDurstenfeld = <T>(array: Readonly<T[]>): T[] => {
   let result = [...array]; // take copy
   for (let i = result.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
