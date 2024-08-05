@@ -25,7 +25,7 @@ const answer = pickRandomElement(myArray);
 ```
 
 ## Weighted distributions:
-Sometimes you want to weight certain outcomes more or less likely than others. This library lets you pass a Map of keys with relative probabilities (weights), and each time you call the function, you will get a single key back but with the probabilities stacked in favour of the ones you weighted higher.
+Sometimes you want to weight certain outcomes more or less likely than others. This library lets you pass a [Map](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map) of keys with relative probabilities (weights), and each time you call the function, you will get a single key back but with the probabilities stacked in favour of the ones you weighted higher.
 
 - `pickKeysWithWeights`
 
@@ -41,7 +41,9 @@ weights.set("three", 2);
 
 const pick = pickKeysWithWeights(weights);
 
-// Expect to get "three" roughly twice as often compared to "one" or "two". The chances of getting "three" any given time is 50%, however - that's probability, folks!
+// Expect to get "three" roughly twice as often compared to "one" or "two". 
+// The chances of getting "three" any given time is 50%, however - 
+// that's probability, folks!
 ```
 
 
@@ -54,7 +56,8 @@ const weights = new Map([
 
 const pick = pickKeysWithWeights(weights);
 
-// Expect to get "heads" roughly twice as often as "tails". That means 66.6% chance vs 33.3% chance, right?
+// Expect to get "heads" roughly twice as often as "tails". That means 
+// 66.6% chance vs 33.3% chance, right?
 
 ```
 
